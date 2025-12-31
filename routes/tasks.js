@@ -22,7 +22,7 @@ router.get('/new', taskController.showNewTaskForm);
 
 // Route to handle task creation
 // When the form is submitted via POST to '/tasks', the 'createTask' method in taskController is called
-router.post('/', taskController.createTask);
+router.post('/', taskController.validateTask, taskController.createTask);
 
 // Route to fetch and display all tasks
 // When the user visits '/tasks', the 'getAllTasks' method in taskController is called
@@ -42,7 +42,7 @@ router.get('/:id/edit', taskController.showEditTaskForm);
 
 // Route to handle task updates
 // When the user submits changes via PUT to '/tasks/:id', the 'updateTask' method in taskController is called for the specific task ID
-router.put('/:id', taskController.updateTask);
+router.put('/:id', taskController.validateTask, taskController.updateTask);
 
 // Route to toggle the completion status of a task
 // When the user toggles completion via PUT to '/tasks/:id/toggle', the 'toggleCompleteTask' method in taskController is called

@@ -13,6 +13,54 @@
     <link rel="stylesheet" href="/css/styles.css">
     <!-- Links to an external CSS file that contains styles for the page -->
 
+    <script>
+        // Client-side registration form validation
+        function validateRegisterForm(event) {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const password2 = document.getElementById('password2').value;
+
+            // Validate name
+            if (name.length < 2 || name.length > 50) {
+                alert('Name must be between 2 and 50 characters');
+                event.preventDefault();
+                return false;
+            }
+
+            // Validate email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid email address');
+                event.preventDefault();
+                return false;
+            }
+
+            // Validate password
+            if (password.length < 8) {
+                alert('Password must be at least 8 characters');
+                event.preventDefault();
+                return false;
+            }
+
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
+            if (!passwordRegex.test(password)) {
+                alert('Password must contain at least one uppercase letter, one lowercase letter, and one number');
+                event.preventDefault();
+                return false;
+            }
+
+            // Validate password match
+            if (password !== password2) {
+                alert('Passwords do not match');
+                event.preventDefault();
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+
     <img src="/images/Tasklytic.webp" alt="Tasklytic Logo" width="100" height="100" style="border-radius: 50%;">
     <!-- Displays the Tasklytic logo with a rounded border and specified dimensions -->
 </head>
@@ -31,34 +79,34 @@
         </ul>
     <% } %>
     
-    <form action="/users/register" method="POST">
+    <form action="/users/register" method="POST" onsubmit="return validateRegisterForm(event)">
         <!-- The form sends the registration data to the server using a POST request to the "/users/register" route -->
-        
+
         <div>
             <label for="name">Name</label>
             <!-- Label for the name input field -->
-            <input type="text" id="name" name="name" value="<%= typeof name != 'undefined' ? name : '' %>">
+            <input type="text" id="name" name="name" value="<%= typeof name != 'undefined' ? name : '' %>" minlength="2" maxlength="50" required>
             <!-- Input field for the user's name. If the name was previously entered and the form was reloaded (due to errors), it will retain the previously entered value. Otherwise, it will be empty. -->
         </div>
 
         <div>
             <label for="email">Email</label>
             <!-- Label for the email input field -->
-            <input type="email" id="email" name="email" value="<%= typeof email != 'undefined' ? email : '' %>">
+            <input type="email" id="email" name="email" value="<%= typeof email != 'undefined' ? email : '' %>" required>
             <!-- Input field for the user's email. Similar to the name field, the entered email will be retained if the form is reloaded due to errors. -->
         </div>
 
         <div>
             <label for="password">Password</label>
             <!-- Label for the password input field -->
-            <input type="password" id="password" name="password">
+            <input type="password" id="password" name="password" minlength="8" required>
             <!-- Password input field (not prefilled for security reasons) -->
         </div>
 
         <div>
             <label for="password2">Confirm Password</label>
             <!-- Label for the confirm password input field -->
-            <input type="password" id="password2" name="password2">
+            <input type="password" id="password2" name="password2" required>
             <!-- Input field for confirming the user's password -->
         </div>
 

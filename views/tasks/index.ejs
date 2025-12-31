@@ -56,7 +56,7 @@
                         </form>
 
                         <!-- Button to delete the task, using the DELETE method -->
-                        <form action="/tasks/<%= task._id %>?_method=DELETE" method="POST">
+                        <form action="/tasks/<%= task._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this task? This action cannot be undone.');">
                             <button type="submit">Delete Task</button>
                         </form>
                     </li>

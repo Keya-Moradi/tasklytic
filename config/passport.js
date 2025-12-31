@@ -19,7 +19,7 @@ module.exports = function(passport) {
 
                     // Compare provided password with the stored hashed password
                     bcrypt.compare(password, user.password, (err, isMatch) => {
-                        if (err) throw err; // Handle any error during password comparison
+                        if (err) return done(err); // Handle any error during password comparison
                         if (isMatch) {
                             // If the password matches, return the user object
                             return done(null, user);
@@ -29,7 +29,7 @@ module.exports = function(passport) {
                         }
                     });
                 })
-                .catch(err => console.log(err)); // Catch any error during user lookup
+                .catch(err => done(err)); // Properly handle error during user lookup
         })
     );
 

@@ -1,17 +1,40 @@
 const Task = require('../models/task'); // Import the Task model
+const { body, validationResult } = require('express-validator'); // Import validation functions
 
 // Show the form to add a new task
 exports.showNewTaskForm = (req, res) => {
     res.render('tasks/new'); // Render the form for creating a new task
 };
 
+// Validation rules for creating a task
+exports.validateTask = [
+    body('title')
+        .trim()
+        .notEmpty().withMessage('Title is required')
+        .isLength({ min: 1, max: 200 }).withMessage('Title must be between 1 and 200 characters'),
+    body('description')
+        .trim()
+        .isLength({ max: 1000 }).withMessage('Description must not exceed 1000 characters'),
+    body('dueDate')
+        .optional()
+        .isISO8601().withMessage('Invalid date format')
+];
+
 // Create a new task
 exports.createTask = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        // If validation fails, render the form with errors
+        const errorMessages = errors.array().map(err => ({ msg: err.msg }));
+        req.flash('error_msg', errorMessages[0].msg);
+        return res.redirect('/tasks/new');
+    }
+
     try {
         const { title, description, dueDate } = req.body; // Destructure task fields from the request body
         const newTask = new Task({
-            title,
-            description,
+            title: title.trim(),
+            description: description.trim(),
             dueDate,
             createdAt: Date.now(), // Set the current time as the creation date
             completed: false, // Initialize the task as incomplete
@@ -59,12 +82,20 @@ exports.showEditTaskForm = async (req, res) => {
 
 // Update a task
 exports.updateTask = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        // If validation fails, redirect with error
+        const errorMessages = errors.array().map(err => ({ msg: err.msg }));
+        req.flash('error_msg', errorMessages[0].msg);
+        return res.redirect(`/tasks/${req.params.id}/edit`);
+    }
+
     try {
         const { title, description, dueDate } = req.body; // Destructure updated fields from the request body
         // Find the task by its ID and update its fields, ensuring it belongs to the logged-in user
         await Task.findOneAndUpdate(
             { _id: req.params.id, user: req.user._id },
-            { title, description, dueDate }
+            { title: title.trim(), description: description.trim(), dueDate }
         );
         req.flash('success_msg', 'Task updated successfully'); // Show a success message
         res.redirect('/tasks'); // Redirect to the task list

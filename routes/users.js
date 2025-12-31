@@ -10,7 +10,7 @@ router.get('/register', usersController.showRegisterForm);
 
 // Route to handle user registration
 // When the form is submitted via POST to '/register', 'registerUser' method in usersController is called
-router.post('/register', usersController.registerUser);
+router.post('/register', usersController.validateRegistration, usersController.registerUser);
 
 // Route to show the login form
 // When the user visits '/login', the 'showLoginForm' method in usersController is called

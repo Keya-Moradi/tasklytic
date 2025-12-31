@@ -9,7 +9,8 @@ const passport = require('passport'); // Passport handles user authentication fo
 const session = require('express-session'); // Express-session manages sessions, storing user data between requests.
 const methodOverride = require('method-override'); // Method override allows me to use HTTP methods like PUT/DELETE via POST.
 const flash = require('connect-flash'); // Flash messages show quick alerts like errors or success notices to users.
-const app = express(); // I’m creating an instance of Express to build my app.
+const helmet = require('helmet'); // Helmet helps secure Express apps by setting various HTTP headers.
+const app = express(); // I'm creating an instance of Express to build my app.
 const MongoStore = require('connect-mongo'); // MongoStore stores session data in MongoDB, ensuring persistent login sessions.
 const PORT = process.env.PORT || 3000; // Either using the port from my environment variables or defaulting to port 3000.
 const morgan = require('morgan'); // Morgan logs requests to the console so I can see incoming traffic.
@@ -30,7 +31,8 @@ mongoose.connect(process.env.MONGO_URI)
 app.set('view engine', 'ejs');
 
 // Middleware
-app.use(morgan('dev')); // I’m using Morgan in 'dev' mode to log HTTP requests with concise output.
+app.use(helmet()); // Use Helmet to set secure HTTP headers
+app.use(morgan('dev')); // I'm using Morgan in 'dev' mode to log HTTP requests with concise output.
 app.use(express.static('public')); // This serves static files like CSS, images, and JavaScript from the 'public' folder.
 app.use(express.urlencoded({ extended: false })); // This middleware parses incoming requests with URL-encoded payloads (used for form submissions).
 app.use(methodOverride('_method')); // Method override allows me to simulate PUT/DELETE requests in forms by passing a special query parameter.
@@ -70,6 +72,26 @@ app.use((req, res, next) => {
 app.use('/', require('./routes/index')); // Routes for the home page and general views.
 app.use('/users', require('./routes/users')); // Routes for user registration, login, etc.
 app.use('/tasks', require('./routes/tasks')); // Routes for handling tasks (CRUD operations).
+
+// Centralized error handling middleware
+// This catches any errors that occur in the application and handles them gracefully
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+
+    // Set the error status and message
+    const status = err.status || 500;
+    const message = err.message || 'Something went wrong!';
+
+    // Flash error message and redirect to appropriate page
+    req.flash('error_msg', message);
+
+    // Redirect based on whether user is authenticated
+    if (req.isAuthenticated()) {
+        res.redirect('/tasks');
+    } else {
+        res.redirect('/users/login');
+    }
+});
 
 // Start server
 // Finally, I'm starting the server and having it listen on the specified PORT.

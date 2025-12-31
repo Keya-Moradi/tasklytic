@@ -3,7 +3,7 @@ button {
     background-color: #0096FF; /* Neon blue background color for the button */
     color: white; /* White text for button */
     padding: 10px 20px; /* Padding inside the button */
-    border: 10px 20px; /* Adjusts the button border size */
+    border: 2px solid #0096FF; /* Button border with matching color */
     border-radius: 8px; /* Rounds the button corners */
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow effect */
     cursor: pointer; /* Changes cursor to pointer when hovering over button */
@@ -132,4 +132,82 @@ input::placeholder, textarea::placeholder {
 
 .cancel-btn:hover {
     background-color: #d93838; /* Darker red on hover */
+}
+
+/* Mobile Responsiveness - Media Queries */
+@media (max-width: 768px) {
+    /* Adjust navbar for mobile */
+    .navbar {
+        flex-direction: column; /* Stack logo and links vertically */
+        padding: 10px;
+    }
+
+    .navbar ul {
+        margin-left: 0; /* Remove left margin on mobile */
+        flex-direction: column; /* Stack links vertically */
+        gap: 10px; /* Reduce gap between links */
+        align-items: center; /* Center the links */
+        margin-top: 10px;
+    }
+
+    .logo img {
+        width: 80px; /* Smaller logo on mobile */
+    }
+
+    .logo {
+        width: 80px; /* Smaller logo on mobile */
+    }
+
+    /* Adjust button sizes for mobile */
+    button, .btn {
+        padding: 8px 16px; /* Slightly smaller padding on mobile */
+        font-size: 16px; /* Adjust font size */
+        width: 100%; /* Full width buttons on mobile */
+        max-width: 300px; /* But not too wide */
+    }
+
+    /* Adjust form inputs for mobile */
+    input, textarea {
+        font-size: 16px; /* Prevent zoom on iOS */
+        width: 100%; /* Full width inputs */
+    }
+
+    /* Adjust task list for mobile */
+    .task {
+        width: 100%; /* Full width tasks */
+        margin-bottom: 10px;
+    }
+
+    /* Adjust logo container for mobile */
+    .logo-container {
+        position: static; /* Remove absolute positioning */
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    /* Adjust headings for mobile */
+    h1 {
+        font-size: 24px;
+        text-align: center;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Extra small screens */
+    .navbar li a {
+        font-size: 16px; /* Smaller navbar links */
+        padding: 8px 12px;
+    }
+
+    button, .btn {
+        font-size: 14px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
 }
